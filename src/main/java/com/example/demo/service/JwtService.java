@@ -29,10 +29,10 @@ public class JwtService {
                 .toList());
 
         String token = Jwts.builder()
+                .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*5))
-                .setClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60))
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
 

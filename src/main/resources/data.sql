@@ -69,5 +69,6 @@ INSERT INTO user_roles(user_id, role_id) VALUES
 (2, 1),  -- admin → USER
 (2, 2);  -- admin → ADMIN
 
+INSERT INTO orders(item,user_id) VALUES ("order 1", 1),("order 2", 1),("order 3",2),("order 4",2)
 
 

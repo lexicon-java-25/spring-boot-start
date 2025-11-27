@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Order;
 import com.example.demo.model.Product;
 import com.example.demo.model.dto.ProductRequestDTO;
 import com.example.demo.model.dto.ProductResponseDTO;
+import com.example.demo.service.OrderService;
 import com.example.demo.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -21,10 +23,19 @@ public class ProductController {
 
     private final ProductService service;
 
-    public ProductController(ProductService service) {
+    private final OrderService orderService;
+
+    public ProductController(ProductService service, OrderService orderService) {
         this.service = service;
+        this.orderService = orderService;
     }
 
+
+    @GetMapping("/order")
+    public ResponseEntity<List<Order>> getOrderByUser(){
+        return ResponseEntity.ok(orderService.searchOrderForCurrentUser());
+
+    }
     @GetMapping
     public List<ProductResponseDTO> getAll(){
         return service.getAll();
@@ -66,6 +77,13 @@ public class ProductController {
         return service.findByName(query);
     }
 
+    @GetMapping("/custom")
+    public List<ProductResponseDTO> findCustom(@RequestParam
+                                         @NotBlank
+                                         @Size(min = 2, message ="query must be at least 2 characters long")
+                                         String query){
+        return service.findCustom(query);
+    }
 
 
     @PostMapping

@@ -64,6 +64,13 @@ public class ProductService {
                 .toList();
 
     }
+    public List<ProductResponseDTO> findCustom(String name){
+        return repository.searchByCategoryName(name)
+                .stream()
+                .map(product -> toResponseDTO(product))
+                .toList();
+
+    }
 
     public List<ProductResponseDTO> findByName(String name){
         return repository.findByName(name)
