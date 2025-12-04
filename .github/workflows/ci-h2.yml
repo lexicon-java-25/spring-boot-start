@@ -1,0 +1,27 @@
+name: CI med h2 databas
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["dev"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+#      checkout vår kod
+      - name: chekout code
+        uses: actions/checkout@v6
+
+#      installera rätt java version
+      - name: setup java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+#       bygg och kör tester
+      - name: bild and test
+        run: mvn -B clean verify
