@@ -1,10 +1,10 @@
-package com.example.demo;
+package com.example.demo.model;
 
 public class Greeting {
     private String message;
 
-    public Greeting() {
-        this.message = "hello there";
+    public Greeting(String name) {
+        this.message = name;
     }
 
     public String getMessage() {
