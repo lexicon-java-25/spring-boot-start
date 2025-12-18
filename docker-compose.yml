@@ -5,16 +5,21 @@ services:
     restart: unless-stopped
 
 
+    secrets:
+      - mysql_password
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: prod_db
+      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_password
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - mydata:/var/lib/mysql
+
 
     networks:
       - spring-network
     healthcheck:
-      test: ["CMD", "mysqladmin","ping","-h","localhost","-u","root","-prootpassword" ]
+      test: ["CMD", "mysqladmin","ping","-h","localhost","-u","root", "-p$MYSQL_ROOT_PASSWORD"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,29 +29,22 @@ services:
 #    alternativt
     build: .
     restart: unless-stopped
-#    ports:
-#      - "8081:8080"
+    ports:
+      - ${PORT_TO_EXPOSE}:8080
 
 
+    env_file:
+      - .env
     environment:
 
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/prod_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: rootpassword
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER_ROOT}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-defaultvalue}
+      SPRING_JPA_DATABASE_PLATFORM: ${DIALECT}
 
     depends_on:
       mysql:
         condition: service_healthy
-
-    networks:
-      - spring-network
-
-  gateway-app:
-    image: gateway-app
-
-    ports:
-     - "8082:8080"
 
     networks:
       - spring-network
@@ -59,3 +57,7 @@ volumes:
   mydata:
     driver:
       local
+
+secrets:
+  mysql_password:
+    file: secrets/mysql_password.txt
