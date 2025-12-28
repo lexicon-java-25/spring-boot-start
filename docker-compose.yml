@@ -1,0 +1,63 @@
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+
+
+    secrets:
+      - mysql_password
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_password
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - mydata:/var/lib/mysql
+
+
+    networks:
+      - spring-network
+    healthcheck:
+      test: ["CMD", "mysqladmin","ping","-h","localhost","-u","root", "-p$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  spring-app:
+#    image: spring-docker-demo:v1
+#    alternativt
+    build: .
+    restart: unless-stopped
+    ports:
+      - ${PORT_TO_EXPOSE}:8080
+
+
+    env_file:
+      - .env
+    environment:
+
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER_ROOT}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-defaultvalue}
+      SPRING_JPA_DATABASE_PLATFORM: ${DIALECT}
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    networks:
+      - spring-network
+
+networks:
+  spring-network:
+    driver: bridge
+
+volumes:
+  mydata:
+    driver:
+      local
+
+secrets:
+  mysql_password:
+    file: secrets/mysql_password.txt

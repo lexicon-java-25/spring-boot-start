@@ -39,7 +39,7 @@ public class Controller {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginReqest){
+    public String login(@RequestBody LoginRequestDTO loginReqest){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginReqest.getName(),
@@ -51,7 +51,7 @@ public class Controller {
 
         String token = jwtService.generateToken(user);
 
-        return ResponseEntity.ok(token);
+        return token;
     }
 
 

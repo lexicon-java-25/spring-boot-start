@@ -25,3 +25,14 @@ jobs:
 #       bygg och kör tester
       - name: bild and test
         run: mvn -B clean verify
+
+  new-job:
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: Print greeting
+          run: echo "hello from github actions!"
+
+        - name: Print curent date
+          run: date
+
