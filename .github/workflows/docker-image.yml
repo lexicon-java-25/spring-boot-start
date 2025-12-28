@@ -1,0 +1,30 @@
+name: Build & Push Docker Image to GCP
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker europe-north1-docker.pkg.dev
+
+      - name: Build Docker image
+        run: |
+          docker build -t europe-north1-docker.pkg.dev/spartan-alcove-480912-u4/spring-apps/my-app:latest .
+
+      - name: Push Docker image
+        run: |
+          docker push europe-north1-docker.pkg.dev/spartan-alcove-480912-u4/spring-apps/my-app:latest
