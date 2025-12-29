@@ -34,5 +34,5 @@ jobs:
           --image=europe-north1-docker.pkg.dev/spartan-alcove-480912-u4/spring-apps/my-app:latest \
           --region=europe-north1 \
           --platform=managed \
-          --allow-unauthenticated
+          --allow-unauthenticated \
           --format="value(status.url)"
