@@ -28,3 +28,11 @@ jobs:
       - name: Push Docker image
         run: |
           docker push europe-north1-docker.pkg.dev/spartan-alcove-480912-u4/spring-apps/my-app:latest
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy my-app \
+          --image=europe-north1-docker.pkg.dev/my-project/my-repo/my-app:latest \
+          --region=europe-north1 \
+          --platform=managed \
+          --allow-unauthenticated
+          --format="value(status.url)"
