@@ -29,3 +29,12 @@ jobs:
       - name: Push Docker Image to GCP
         run: |
          docker push europe-north1-docker.pkg.dev/spartan-alcove-480912-u4/spring-apps/my-github-image:latest
+      - name: Deploy docker Image on GCP
+        run: |
+          gcloud run deploy my-github-image \
+          --image=europe-north1-docker.pkg.dev/spartan-alcove-480912-u4/spring-apps/my-github-image:latest \ 
+          --region=europe-north1 \
+          --platform=managed \
+          --allow-unauthenticated \
+          --format="value(status.url)"
+          --add-cloudsql-instances=spartan-alcove-480912-u4:europe-north2:mysql
