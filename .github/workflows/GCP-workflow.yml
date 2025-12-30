@@ -36,5 +36,5 @@ jobs:
           --region=europe-north1 \
           --platform=managed \
           --allow-unauthenticated \
-          --format="value(status.url)"
+          --format="value(status.url)" \
           --add-cloudsql-instances=spartan-alcove-480912-u4:europe-north2:mysql
