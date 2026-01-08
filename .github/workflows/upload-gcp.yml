@@ -1,0 +1,46 @@
+name: Build and push Docker Image to GCP
+
+on:
+  push:
+    branches: [ "dev" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+
+    - name: Configure docker for Artifact Registry
+      run: |
+        gcloud auth configure-docker europe-north1-docker.pkg.dev
+
+
+    - name: Build docker image
+      run: |
+        docker build -t europe-north1-docker.pkg.dev/spartan-alcove-480912-u4/docker-repo/demo-app:latest .
+
+    - name: Push docker image
+      run: |
+        docker push europe-north1-docker.pkg.dev/spartan-alcove-480912-u4/docker-repo/demo-app:latest
+
+    - name: Deploy to cloud run
+      run: |
+        gcloud run deploy demo-app \
+        --image=europe-north1-docker.pkg.dev/spartan-alcove-480912-u4/docker-repo/demo-app:latest \
+        --region=europe-north1 \
+        --platform=managed \
+        --allow-unauthenticated \
+        --format="value(status.url)" \
+        --add-cloudsql-instances spartan-alcove-480912-u4:europe-north1:mysql
+       
