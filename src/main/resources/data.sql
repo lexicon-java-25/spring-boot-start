@@ -72,3 +72,7 @@
 --INSERT INTO orders(item,user_id) VALUES ("order 1", 1),("order 2", 1),("order 3",2),("order 4",2)
 --
 --
+
+
+INSERT INTO accounts(id,owner,balance) VALUES (1,"Bill",1000);
+INSERT INTO accounts(id,owner,balance) VALUES (2,"Bosse",500);
